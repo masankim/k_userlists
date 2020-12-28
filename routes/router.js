@@ -38,5 +38,7 @@ router.get(['/topic','/topic/:id'], function(req, res){
     
 })
 
-
+router.get('/topics/add',function(req, res){
+    res.send("ADD PAGE")
+})
 module.exports = router;

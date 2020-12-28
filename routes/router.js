@@ -16,17 +16,27 @@ router.get('/data' ,function(request, response){
 })
 
 
-router.get('/topic', function(req, res){
+router.get(['/topic','/topic/:id'], function(req, res){
     let sql = 'SELECT * FROM topic'
-    db.query(sql, function(err,result){
-        if(err){
-            console.log(err)
-            res.status(500).send(err)
-        }else {
-            console.log(result)
-            res.render('index', {topics:result})
+    db.query(sql, function(err,results){
+        console.log(req.params.id)
+        let ids = req.params.id
+        let sql = "SELECT * FROM topic WHERE id = ?"
+        if(ids){
+            db.query(sql,[ids], function(err, result){
+                console.log(result[0])
+                res.render('index', {topic:result[0], topics:results})
+            })
+        } else {
+            console.log(results)
+            res.render('index', {topic:undefined, topics:results})
         }
+        
+           
+        
     })
     
 })
+
+
 module.exports = router;

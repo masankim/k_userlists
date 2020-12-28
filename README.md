@@ -275,7 +275,7 @@ views폴더에 index.ejs 추가
 
 
 
-http://localhost:8080/topics 로 get방식으로 요청을 하면
+http://localhost:8080/topic 로 get방식으로 요청을 하면
 
 mysql에 접속하여 topic에 있는 contents를 모두 조회해서 console창에 띄워 보는 시나리오를 생각해 보자
 
@@ -311,7 +311,7 @@ const db = mysql.createConnection({
 })
 
 
-app.get('/topics', function(req, res){
+app.get('/topic', function(req, res){
     let sql = 'SELECT * FROM topic';
     db.query(sql,function(err, result ){
         if(err){
@@ -337,6 +337,121 @@ o2 database 내용
 실행결과물 
 
 ![image-20201205180229687](https://user-images.githubusercontent.com/75194770/101272477-e2565a00-37cf-11eb-8df7-faeda5b98b68.png)
+
+
+
+#### views/index.ejs 를 다음과 같이 수정
+
+```html
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <h1><a href='/topic'>Server Side Javascript</a></h1>
+    <ol>
+      <% for(var i = 0; i< topics.length; i++){ %> 
+        <!-- // 전달 받은 topics를 통하여 글목록 보여주기 -->
+        <li>
+          <a href='/topic/<%= topics[i].id %>'>
+             <!-- // 링크를 누르면, db에 저장된 각 글의 id 값을 통하여 아래의 article 태그 안에 글의 상세 내용을 보여주게 한다. -->
+            <%= topics[i].title %>
+          </a>
+        </li>
+      <% }; %>
+    </ol>
+            
+         <article>
+      
+        <!-- // 글 목록을 누를지 않았을때,(id 값이 없을때 환영한다는 내용을 띄운다.) -->
+        <h2>Welcome</h2>
+         This is server side javascript tutorial.
+     
+    </article>
+  </body>
+</html>
+```
+
+
+
+
+
+##### 각 제목 목록을 클릭하면  title목록에 따라 상세내용이 하단에 출력되도록 구현한다.
+
+각 title을 클릭하면  http://localhost:8080/topic/<id>   이 경로로 get방식으로 요청이 들어오므로
+
+router/apiRouter.js 코드를 추가 
+
+```javascript
+router.get(['/topic', '/topic/:id'] , function(req, res){
+    let sql = 'SELECT * FROM topic';
+    db.query(sql, function(err, results){
+        let ids = req.params.id
+        let sql = "SELECT * FROM topic WHERE id = ?"
+        if(ids) {
+            db.query(sql, [ids] ,function(err, result){
+                if(err) {
+                    console.log(err)
+                    res.status(500).send('Internal Server Error')
+                } else {
+                    console.log(result)
+                    res.render('index', {topics:results, topic:result[0]})
+                }
+            })
+        } else {
+            res.render('index', {topics:results, topic:undefined})
+        }
+    })
+})
+```
+
+
+
+views/index.ejs
+
+```html
+<!-- //view.ejs -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <h1><a href='/topic'></a>Server Side Javascript</a></h1>
+    <ol>
+      <% for(var i = 0; i< topics.length; i++){ %> 
+        <!-- // 전달 받은 topics를 통하여 글목록 보여주기 -->
+        <li>
+          <a href='/topic/<%= topics[i].id %>'>
+             <!-- // 링크를 누르면, db에 저장된 각 글의 id 값을 통하여 아래의 article 태그 안에 글의 상세 내용을 보여주게 한다. -->
+            <%= topics[i].title %>
+          </a>
+        </li>
+      <% }; %>
+    </ol>
+    <article>
+      <% if(topic){ %> 
+        <!-- // 글 목록을 눌렀을때, topic객체를 get방식으로 넘겨 받을 수 있고, -->
+        <h2><%= topic.title %></h2>  
+        <!-- topic 객체의 title키를 통하여 제목을 알 수 있고, -->
+        <p> <%= topic.description %> </p> 
+        <!-- description키를 통하여 내용을 알 수 있고, -->
+        <p><%= 'by ' + topic.author %></p> 	
+        <!-- author키를 통하여 저자를 알 수 있다. -->
+      <% } else { %> 
+        <!-- // 글 목록을 누를지 않았을때,(id 값이 없을때 환영한다는 내용을 띄운다.) -->
+        <h2>Welcome</h2>
+         This is server side javascript tutorial.
+      <% } %>
+    </article>
+   
+  </body>
+</html>
+```
+
+
 
 
 

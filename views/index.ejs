@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1><a href="/topic">Server Side Javascript</a></h1><br>
+    <ol>
+        <% for (var i=0; i<topics.length; i++ )   { %>
+       <!-- // 링크를 누르면, db에 저장된 각 글의 id 값을 통하여 아래의 article 태그 안에 글의 상세 내용을 보여주게 한다. -->
+        <li><a href="/topic/<%= topics[i].id %>">
+            <%= topics[i].title %>
+        </a></li>
+        <% } %>
+    </ol>
+
+    <article>
+      
+        <!-- // 글 목록을 누를지 않았을때,(id 값이 없을때 환영한다는 내용을 띄운다.) -->
+        <h2>Welcome</h2>
+         This is server side javascript tutorial.
+     
+    </article>
+    <!-- <h2><%= topics %></h2><br>
+    <h2><%= topics[0].title %></h2><br>
+    <h2><%= topics[0].description %></h2><br>
+    <h2><%= topics[0].author %></h2><br> -->
+
+
+</body>
+</html>

@@ -381,7 +381,7 @@ o2 database 내용
 
 각 title을 클릭하면  http://localhost:8080/topic/<id>   이 경로로 get방식으로 요청이 들어오므로
 
-router/apiRouter.js 코드를 추가 
+routes/router.js 코드를 추가 
 
 ```javascript
 router.get(['/topic', '/topic/:id'] , function(req, res){
@@ -459,7 +459,7 @@ views/index.ejs
 
 database의o2에 있는 topic 테이블에 contents를 추가하는 기능을 구현한다.
 
-[url : http://localhost:8080/topics](http://localhost:8080/topics)
+[url : http://localhost:8080/topics/add](http://localhost:8080/topics)
 
 Method: POST
 
@@ -483,7 +483,7 @@ db 에 저장되도록 요청
 
 
 
-![image-20201205180415020](https://user-images.githubusercontent.com/75194770/101239146-884e8980-3728-11eb-9280-e69dba5500ce.png)
+![image-20201229172721889](https://user-images.githubusercontent.com/75194770/103270461-506ef500-49fb-11eb-89fc-b2682cf3c11d.png)
 
 
 
@@ -521,7 +521,7 @@ method :GET
 
 index.ejs 파일을 documents로 변환해서 클라이언트에게 전송한다.
 
-router/apiRouter.js
+routes/router.js
 
 ```jvascript
 const express = require('express')
@@ -618,7 +618,7 @@ views/index.ejs
 
 각 title을 클릭하면  http://localhost:8080/topic/<id>   이 경로로 get방식으로 요청이 들어오므로
 
-router/apiRouter.js 코드를 추가 
+routes/router.js 코드를 추가 
 
 ```javascript
 router.get(['/topic', '/topic/:id'] , function(req, res){
@@ -760,13 +760,13 @@ views/add.ejs
     <article>
       <form action="/topic/add" method="POST">
         <p><input type="text" name="title"  placeholder="title" ></p> // value를 통하여 전달받은 topic객체의(수정해야할) 데이터를 표시할 수 있다.
-        <p><textarea name="description" rows="6" cols="50" placeholder="description"> </textarea></p>// textarea는 태그들 사이에 데이터를 입력해야 표시가능.(	rows는 행이고, cols는 열이다 이걸 통하여 textarea의 크기를 조정한다. )
+        <p><textarea name="descriptions" rows="6" cols="50" placeholder="descriptions"> </textarea></p>// textarea는 태그들 사이에 데이터를 입력해야 표시가능.(	rows는 행이고, cols는 열이다 이걸 통하여 textarea의 크기를 조정한다. )
         <p><input type="text" name="author"  placeholder="author"></p>
-        <p><input type="submit" value="추가확정"></p>
+        <p><input type="submit" value="제출"></p>
       </form>
     </article>
     <ul>
-        <li><a href="/topic/add">add</a></li>
+        <li><a href="/topic">목록으로</a></li>
     </ul>
   </body>
 </html>
@@ -821,7 +821,7 @@ index.ejs의 삭제버튼 추가
 
 
 
-apiRouter.js
+router.js
 
 ```javascript
 router.get('/topic/:id/delete', function(req, res){
@@ -830,6 +830,7 @@ router.get('/topic/:id/delete', function(req, res){
     db.query(sql, [ids],function(err, result){
         if(err) {
             console.log(err)
+            res.status(500).send(err)
         } else {
             res.redirect('/topic')
         }

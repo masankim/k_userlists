@@ -68,4 +68,19 @@ router.post('/topics/add', function(req, res){
     })
     
 })
+
+router.get('/topic/:id/delete', function(req, res){
+    console.log(req.params.id)
+    let ids = req.params.id
+    let sql = 'DELETE FROM `topic` WHERE (`id` = ?);'
+    db.query(sql,[ids],  function(err, result){
+        if(err){
+            console.log(err)
+            res.status(500).send(err)
+        } else {
+            console.log(result)
+            res.redirect('/topic')
+        }
+    })
+})
 module.exports = router;

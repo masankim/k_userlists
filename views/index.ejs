@@ -10,9 +10,10 @@
     <ol>
         <% for (var i=0; i<topics.length; i++ )   { %>
        <!-- // 링크를 누르면, db에 저장된 각 글의 id 값을 통하여 아래의 article 태그 안에 글의 상세 내용을 보여주게 한다. -->
-        <li><a href="/topic/<%= topics[i].id %>">
-            <%= topics[i].title %>
-        </a></li>
+        <li><a href="/topic/<%= topics[i].id %>"><%= topics[i].title %></a>
+            <!-- 삭제버트 추가 -->
+          <a href="/topic/<%= topics[i].id %>/delete" style="margin-left: 10;" ><button onclick="confirm('정말삭제하시겠습니까')">삭제하기</button></a>
+        </li>
         <% } %>
     </ol>
 

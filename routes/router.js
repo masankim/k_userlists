@@ -39,6 +39,33 @@ router.get(['/topic','/topic/:id'], function(req, res){
 })
 
 router.get('/topics/add',function(req, res){
-    res.send("ADD PAGE")
+    let sql = 'SELECT * FROM topic'
+    db.query(sql, function(err,results){
+       
+        if(err){
+           console.log(err)
+        } else {
+            console.log(results)
+            res.render('add', { topics:results})
+        }           
+    })
+})
+
+router.post('/topics/add', function(req, res){
+    console.log(req.body)
+    let title = req.body.title
+    let description = req.body.descriptions
+    let author = req.body.author
+    let sql = "INSERT INTO `topic` (`title`, `description`, `author`) VALUES (?, ?, ?);"
+    db.query(sql,[title,description,author],function(err, result){
+        if(err) {
+            console.log(err)
+            res.status(500).send(err)
+        }else {
+            console.log(result)
+            res.redirect("/topic")
+        }
+    })
+    
 })
 module.exports = router;
